@@ -51,7 +51,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-        security.allowFormAuthenticationForClients();
+        security.passwordEncoder(passwordEncoder()).allowFormAuthenticationForClients();
     }
 
     @Override
