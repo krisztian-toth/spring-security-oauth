@@ -1,5 +1,6 @@
 package hu.krisz.config;
 
+import hu.krisz.dao.ApplicationJdbcDaoImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,10 +34,14 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     private DataSource dataSource;
 
     @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
     private AuthenticationConfiguration authenticationConfiguration;
+
+    @Bean
+    protected UserDetailsService userDetailsService() {
+        ApplicationJdbcDaoImpl applicationJdbcDao = new ApplicationJdbcDaoImpl();
+        applicationJdbcDao.setDataSource(dataSource);
+        return applicationJdbcDao;
+    }
 
     @Bean
     protected PasswordEncoder passwordEncoder() {
@@ -47,7 +52,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints
                 .tokenStore(new JdbcTokenStore(dataSource))
-                .userDetailsService(userDetailsService)
+                .userDetailsService(userDetailsService())
                 .authenticationManager(authenticationConfiguration.getAuthenticationManager());
     }
 
