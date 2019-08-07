@@ -1,6 +1,6 @@
 package hu.krisz.config;
 
-import hu.krisz.dao.EntityBasedUserDetailsService;
+import hu.krisz.userdetails.EntityBasedUserDetailsService;
 import hu.krisz.dao.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

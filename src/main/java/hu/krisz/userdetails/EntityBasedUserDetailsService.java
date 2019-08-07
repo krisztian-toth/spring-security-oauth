@@ -1,4 +1,4 @@
-package hu.krisz.dao;
+package hu.krisz.userdetails;
 
 import hu.krisz.dao.entity.AppUser;
 import hu.krisz.dao.entity.Role;
