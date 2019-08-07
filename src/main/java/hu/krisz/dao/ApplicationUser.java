@@ -3,9 +3,13 @@ package hu.krisz.dao;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Extension of {@link User} with some custom fields.
@@ -13,40 +17,115 @@ import java.util.Collection;
  * @author krisztian.toth on 6-8-2019
  */
 @SuppressWarnings("squid:S2160")
-public class ApplicationUser extends User {
+public class ApplicationUser implements UserDetails {
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
-    private final String email;
-    private final transient LocalDateTime createdAt;
+    private final UUID id;
+    private final transient Instant createdAt;
+    private final transient Instant updatedAt;
+    private final String username;
+    private final String password;
+    private final String companyName;
+    private final boolean accountNonExpired;
+    private final boolean accountNonLocked;
+    private final boolean credentialsNonExpired;
+    private final boolean enabled;
+    private final List<GrantedAuthority> authorities;
 
-    public ApplicationUser(String username, String password, Collection<? extends GrantedAuthority> authorities,
-                           String email, LocalDateTime createdAt) {
-        super(username, password, authorities);
-        this.email = email;
+    public ApplicationUser(UUID id, Instant createdAt, Instant updatedAt, String username, String password,
+                           String companyName, boolean accountNonExpired, boolean accountNonLocked,
+                           boolean credentialsNonExpired, boolean enabled, List<GrantedAuthority> authorities) {
+        this.id = id;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.username = username;
+        this.password = password;
+        this.companyName = companyName;
+        this.accountNonExpired = accountNonExpired;
+        this.accountNonLocked = accountNonLocked;
+        this.credentialsNonExpired = credentialsNonExpired;
+        this.enabled = enabled;
+        this.authorities = authorities;
     }
 
-    @SuppressWarnings("squid:S00107")
-    public ApplicationUser(String username, String password, boolean enabled, boolean accountNonExpired,
-                           boolean credentialsNonExpired, boolean accountNonLocked,
-                           Collection<? extends GrantedAuthority> authorities, String email, LocalDateTime createdAt) {
-        super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
-        this.email = email;
-        this.createdAt = createdAt;
+    public UUID getId() {
+        return id;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public LocalDateTime getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return accountNonExpired;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return accountNonLocked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return credentialsNonExpired;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ApplicationUser user = (ApplicationUser) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
-        return super.toString() +
-                "; Email: " + email +
-                "; CreatedAt: " + createdAt;
+        return "ApplicationUser{" +
+                "id=" + id +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", username='" + username + '\'' +
+                ", password='" + "[PROTECTED]" + '\'' +
+                ", companyName='" + companyName + '\'' +
+                ", accountNonExpired=" + accountNonExpired +
+                ", accountNonLocked=" + accountNonLocked +
+                ", credentialsNonExpired=" + credentialsNonExpired +
+                ", enabled=" + enabled +
+                ", authorities=" + authorities +
+                '}';
     }
 }

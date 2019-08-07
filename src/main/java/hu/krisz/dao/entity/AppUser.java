@@ -53,6 +53,9 @@ public class AppUser {
     @Column(nullable = false)
     private String companyName;
 
+    @Column(nullable = false)
+    private Boolean enabled;
+
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE,
@@ -90,6 +93,10 @@ public class AppUser {
         return companyName;
     }
 
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
     public List<Role> getRoles() {
         return roles;
     }
@@ -117,6 +124,7 @@ public class AppUser {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", companyName='" + companyName + '\'' +
+                ", enabled='" + enabled + '\'' +
                 '}';
     }
 }
