@@ -42,6 +42,7 @@ public class Role {
     }, fetch = FetchType.EAGER)
     @JoinTable(
             name = "role_permissions",
+            schema = "oauth",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id")
     )

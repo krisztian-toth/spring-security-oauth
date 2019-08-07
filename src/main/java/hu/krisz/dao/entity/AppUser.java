@@ -50,7 +50,7 @@ public class AppUser {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(name = "company_name", nullable = false)
     private String companyName;
 
     @Column(nullable = false)
@@ -64,6 +64,7 @@ public class AppUser {
     })
     @JoinTable(
             name = "user_roles",
+            schema = "oauth",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
