@@ -1,6 +1,7 @@
 package hu.krisz.config;
 
-import hu.krisz.dao.ApplicationJdbcDaoImpl;
+import hu.krisz.dao.EntityBasedUserDetailsService;
+import hu.krisz.dao.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,13 +40,14 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     private DataSource dataSource;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
     protected UserDetailsService userDetailsService() {
-        ApplicationJdbcDaoImpl applicationJdbcDao = new ApplicationJdbcDaoImpl();
-        applicationJdbcDao.setDataSource(dataSource);
-        return applicationJdbcDao;
+        return new EntityBasedUserDetailsService(userRepository);
     }
 
     @Bean
