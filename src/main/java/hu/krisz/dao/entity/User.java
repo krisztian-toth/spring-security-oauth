@@ -25,8 +25,8 @@ import java.util.UUID;
  * @author krisztian.toth on 7-8-2019
  */
 @Entity
-@Table(schema = "oauth")
-public class AppUser {
+@Table(name = "app_user", schema = "oauth")
+public class User {
 
     @Id
     @GeneratedValue
@@ -100,9 +100,9 @@ public class AppUser {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AppUser appUser = (AppUser) o;
-        return Objects.equals(username, appUser.username) &&
-                Objects.equals(companyName, appUser.companyName);
+        User user = (User) o;
+        return Objects.equals(username, user.username) &&
+                Objects.equals(companyName, user.companyName);
     }
 
     @Override

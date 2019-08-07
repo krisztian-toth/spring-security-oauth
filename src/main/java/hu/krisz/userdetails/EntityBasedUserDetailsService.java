@@ -1,6 +1,6 @@
 package hu.krisz.userdetails;
 
-import hu.krisz.dao.entity.AppUser;
+import hu.krisz.dao.entity.User;
 import hu.krisz.dao.entity.Role;
 import hu.krisz.dao.repository.UserRepository;
 import org.apache.commons.logging.Log;
@@ -48,7 +48,7 @@ public class EntityBasedUserDetailsService implements UserDetailsService {
                 });
     }
 
-    private UserDetails createUserDetailsFrom(AppUser user) {
+    private UserDetails createUserDetailsFrom(User user) {
         List<GrantedAuthority> permissions = getGrantedAuthoritiesFrom(user.getRoles());
         if (permissions.isEmpty()) {
             LOGGER.debug("User '" + user.getUsername() + "' has no authorities and will be treated as 'not found'");
