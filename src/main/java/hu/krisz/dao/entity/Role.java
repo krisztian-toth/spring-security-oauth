@@ -1,8 +1,9 @@
 package hu.krisz.dao.entity;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -30,8 +31,8 @@ public class Role {
     @GeneratedValue
     private UUID id;
 
-    @Column(unique = true)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private Name name;
 
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
@@ -59,7 +60,7 @@ public class Role {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
@@ -87,5 +88,30 @@ public class Role {
                 ", name='" + name + '\'' +
                 ", permissions=" + permissions +
                 '}';
+    }
+
+    /**
+     * Represents the possible roles in the application.
+     */
+    public enum Name {
+        /**
+         * Administrators of the application.
+         */
+        ADMIN,
+
+        /**
+         * Managers for a given company.
+         */
+        MANAGER,
+
+        /**
+         * Waiters in company.
+         */
+        WAITER,
+
+        /**
+         * Staff in company.
+         */
+        STAFF;
     }
 }
