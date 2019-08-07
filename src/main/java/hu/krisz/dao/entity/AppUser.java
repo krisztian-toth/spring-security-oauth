@@ -9,7 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -26,12 +25,7 @@ import java.util.UUID;
  * @author krisztian.toth on 7-8-2019
  */
 @Entity
-@Table(
-        schema = "oauth",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"username", "company_name"})
-        }
-)
+@Table(schema = "oauth")
 public class AppUser {
 
     @Id
@@ -44,7 +38,7 @@ public class AppUser {
     @LastModifiedDate
     private Instant updatedAt;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String username;
 
     @Column(nullable = false)

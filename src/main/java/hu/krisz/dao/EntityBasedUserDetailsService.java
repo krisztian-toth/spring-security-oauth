@@ -10,10 +10,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -31,27 +31,28 @@ public class EntityBasedUserDetailsService implements UserDetailsService {
     }
 
     /**
-     * Loads the user by their ID instead of username, as username is not necessarily unique.
+     * Loads the user by their username.
      *
-     * @param userId the ID identifying the user whose data is required
+     * @param username the username identifying the user whose data is required
      * @return a fully populated user record (never <code>null</code>)
      * @throws UsernameNotFoundException if the user could not be found or the user has no GrantedAuthority
      */
+    @Transactional
     @Override
-    public UserDetails loadUserByUsername(String userId) {
-        return userRepository.findById(UUID.fromString(userId))
+    public UserDetails loadUserByUsername(String username) {
+        return userRepository.findByUsername(username)
                 .map(this::createUserDetailsFrom)
                 .orElseThrow(() -> {
-                    LOGGER.debug("user with ID " + userId + "was not found");
-                    return new UsernameNotFoundException("user with ID " + userId + "was not found");
+                    LOGGER.debug("user with username '" + username + "' was not found");
+                    return new UsernameNotFoundException("user with username '" + username + "' was not found");
                 });
     }
 
     private UserDetails createUserDetailsFrom(AppUser user) {
         List<GrantedAuthority> permissions = getGrantedAuthoritiesFrom(user.getRoles());
         if (permissions.isEmpty()) {
-            LOGGER.debug("User '" + user.getId() + "' has no authorities and will be treated as 'not found'");
-            throw new UsernameNotFoundException("user " + user.getId() + " has no GrantedAuthority.");
+            LOGGER.debug("User '" + user.getUsername() + "' has no authorities and will be treated as 'not found'");
+            throw new UsernameNotFoundException("user '" + user.getUsername() + "' has no GrantedAuthority.");
         }
 
         return new ApplicationUser(user.getId(), user.getCreatedAt(), user.getUpdatedAt(), user.getUsername(),
