@@ -1,6 +1,6 @@
 package hu.krisz.dao.repository;
 
-import hu.krisz.dao.entity.User;
+import hu.krisz.dao.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,7 +1,7 @@
 package hu.krisz.userdetails;
 
-import hu.krisz.dao.entity.User;
-import hu.krisz.dao.entity.Role;
+import hu.krisz.dao.entity.user.User;
+import hu.krisz.dao.entity.user.Role;
 import hu.krisz.dao.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

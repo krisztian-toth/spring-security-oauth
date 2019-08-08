@@ -1,4 +1,4 @@
-package hu.krisz.dao.entity;
+package hu.krisz.dao.entity.user;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
