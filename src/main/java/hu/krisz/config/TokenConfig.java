@@ -1,12 +1,13 @@
 package hu.krisz.config;
 
+import hu.krisz.dao.repository.RefreshTokenRepository;
+import hu.krisz.token.PersistedRefreshTokenJwtTokenStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 /**
  * Configuration class for setting up the token services.
@@ -26,8 +27,9 @@ public class TokenConfig {
     }
 
     @Bean
-    protected TokenStore tokenStore(JwtAccessTokenConverter jwtAccessTokenConverter) {
-        return new JwtTokenStore(jwtAccessTokenConverter);
+    protected TokenStore tokenStore(JwtAccessTokenConverter jwtAccessTokenConverter,
+                                    RefreshTokenRepository refreshTokenRepository) {
+        return new PersistedRefreshTokenJwtTokenStore(jwtAccessTokenConverter, refreshTokenRepository);
     }
 
     @Bean
