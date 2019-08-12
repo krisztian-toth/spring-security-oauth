@@ -16,18 +16,20 @@ import java.util.Objects;
 @Table(schema = "oauth")
 public class RefreshToken {
     @Id
-    private String tokenId;
+    private String username;
 
     @Column(nullable = false)
     private String token;
 
-    public RefreshToken(final String tokenId, final String token) {
-        this.tokenId = tokenId;
+    public RefreshToken(final String username, final String token) {
+        this.username = username;
         this.token = token;
     }
 
-    public String getTokenId() {
-        return tokenId;
+    private RefreshToken() {}
+
+    public String getUsername() {
+        return username;
     }
 
     public String getToken() {
@@ -50,7 +52,7 @@ public class RefreshToken {
     @Override
     public String toString() {
         return "RefreshToken{" +
-                "tokenId='" + tokenId + '\'' +
+                "username='" + username + '\'' +
                 ", token='" + token + '\'' +
                 '}';
     }
