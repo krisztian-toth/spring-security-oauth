@@ -5,6 +5,7 @@ import hu.krisz.token.PersistedRefreshTokenJwtTokenStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
@@ -33,10 +34,12 @@ public class TokenConfig {
     }
 
     @Bean
-    protected DefaultTokenServices defaultTokenServices(TokenStore tokenStore) {
+    protected DefaultTokenServices defaultTokenServices(TokenStore tokenStore,
+                                                        ClientDetailsService clientDetailsService) {
         DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
         defaultTokenServices.setTokenStore(tokenStore);
         defaultTokenServices.setSupportRefreshToken(true);
+        defaultTokenServices.setClientDetailsService(clientDetailsService);
         return defaultTokenServices;
     }
 }

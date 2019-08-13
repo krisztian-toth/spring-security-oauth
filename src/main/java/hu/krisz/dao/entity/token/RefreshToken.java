@@ -21,13 +21,18 @@ public class RefreshToken {
     @Column(nullable = false)
     private String token;
 
+    @Column(unique = true)
+    private String username;
+
+    @Column
     private Instant expiresAt;
 
     @CreatedDate
     private Instant issuedAt;
 
-    public RefreshToken(final String token, final Instant expiresAt) {
+    public RefreshToken(String token, String username, Instant expiresAt) {
         this.token = token;
+        this.username = username;
         this.expiresAt = expiresAt;
     }
 
@@ -41,6 +46,10 @@ public class RefreshToken {
         return token;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public Instant getExpiresAt() {
         return expiresAt;
     }
@@ -50,7 +59,7 @@ public class RefreshToken {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RefreshToken that = (RefreshToken) o;
@@ -66,6 +75,7 @@ public class RefreshToken {
     public String toString() {
         return "RefreshToken{" +
                 "token='" + token + '\'' +
+                ", username='" + username + '\'' +
                 ", expiresAt=" + expiresAt +
                 ", issuedAt=" + issuedAt +
                 '}';

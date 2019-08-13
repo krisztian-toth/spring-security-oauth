@@ -2,15 +2,18 @@ package hu.krisz.token;
 
 import hu.krisz.dao.entity.token.RefreshToken;
 import hu.krisz.dao.repository.RefreshTokenRepository;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.common.DefaultExpiringOAuth2RefreshToken;
+import org.springframework.security.oauth2.common.ExpiringOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 
 /**
  * JWT Token store which persists the refresh token.
@@ -18,6 +21,8 @@ import java.security.NoSuchAlgorithmException;
  * @author krisztian.toth on 8-8-2019
  */
 public class PersistedRefreshTokenJwtTokenStore extends JwtTokenStore {
+
+    private static final Log LOG = LogFactory.getLog(PersistedRefreshTokenJwtTokenStore.class);
 
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -40,50 +45,43 @@ public class PersistedRefreshTokenJwtTokenStore extends JwtTokenStore {
      */
     @Override
     public void storeRefreshToken(OAuth2RefreshToken refreshToken, OAuth2Authentication authentication) {
-        String tokenValue = refreshToken.getValue();
-        refreshTokenRepository.save(new RefreshToken(extractTokenKey(tokenValue), tokenValue));
+        // we only want to store refresh tokens with an expiry date
+        if (refreshToken instanceof ExpiringOAuth2RefreshToken) {
+            Authentication userAuthentication = authentication.getUserAuthentication();
+            if (userAuthentication != null) {
+                Object principal = userAuthentication.getPrincipal();
+                String username;
+                if (principal instanceof String) {
+                    username = (String) principal;
+                } else if (principal instanceof UserDetails) {
+                    username = ((UserDetails) principal).getUsername();
+                } else {
+                    LOG.warn("Unknown type for principal: " + principal.getClass().toString()
+                            + ", skipping persisting...");
+                    return;
+                }
+
+                // If there's already a refresh token existing for the user, we delete it
+                refreshTokenRepository.findByUsername(username).ifPresent(refreshTokenRepository::delete);
+
+                Date expiration = ((ExpiringOAuth2RefreshToken) refreshToken).getExpiration();
+                refreshTokenRepository.save(new RefreshToken(refreshToken.getValue(), username, expiration.toInstant()));
+            }
+        } else {
+            LOG.warn("The provided refresh token is not of type ExpiringOAuth2RefreshToken, skipping persisting...");
+        }
     }
 
     @Override
     public OAuth2RefreshToken readRefreshToken(String tokenValue) {
-        return refreshTokenRepository.findById(extractTokenKey(tokenValue))
-                .map(token -> super.readRefreshToken(token.getToken()))
+        return refreshTokenRepository.findByToken(tokenValue)
+                .map(token -> new DefaultExpiringOAuth2RefreshToken(token.getToken(), Date.from(token.getExpiresAt())))
                 .orElse(null);
     }
 
     @Override
     public void removeRefreshToken(OAuth2RefreshToken token) {
-        refreshTokenRepository.findById(extractTokenKey(token.getValue()))
+        refreshTokenRepository.findByToken(token.getValue())
                 .ifPresent(refreshTokenRepository::delete);
-    }
-
-    /**
-     * Generates a key from the token. Lifted from
-     * {@link org.springframework.security.oauth2.provider.token.store.JdbcTokenStore}.
-     *
-     * @param value the token's value
-     * @return the key generated from the token
-     */
-    @SuppressWarnings({"squid:S1166", "squid:S2070"})
-    private String extractTokenKey(String value) {
-        if (value == null) {
-            return null;
-        }
-        MessageDigest digest;
-        try {
-            digest = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("MD5 algorithm not available.  Fatal (should be in the JDK).");
-        }
-
-        String payload;
-        try {
-            payload = value.split("\\.")[1];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new IllegalArgumentException("payload is not a valid JWT string", e);
-        }
-
-        byte[] bytes = digest.digest(payload.getBytes(StandardCharsets.UTF_8));
-        return String.format("%032x", new BigInteger(1, bytes));
     }
 }
