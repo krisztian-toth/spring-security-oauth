@@ -4,7 +4,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.springframework.data.annotation.CreatedDate;
 
+import java.time.Instant;
 import java.util.Objects;
 
 /**
@@ -16,24 +18,35 @@ import java.util.Objects;
 @Table(schema = "oauth")
 public class RefreshToken {
     @Id
-    private String username;
-
     @Column(nullable = false)
     private String token;
 
-    public RefreshToken(final String username, final String token) {
-        this.username = username;
+    private Instant expiresAt;
+
+    @CreatedDate
+    private Instant issuedAt;
+
+    public RefreshToken(final String token, final Instant expiresAt) {
         this.token = token;
+        this.expiresAt = expiresAt;
     }
 
-    private RefreshToken() {}
-
-    public String getUsername() {
-        return username;
+    /**
+     * NoArgs constructor, required by Hibernate.
+     */
+    private RefreshToken() {
     }
 
     public String getToken() {
         return token;
+    }
+
+    public Instant getExpiresAt() {
+        return expiresAt;
+    }
+
+    public Instant getIssuedAt() {
+        return issuedAt;
     }
 
     @Override
@@ -52,8 +65,9 @@ public class RefreshToken {
     @Override
     public String toString() {
         return "RefreshToken{" +
-                "username='" + username + '\'' +
-                ", token='" + token + '\'' +
+                "token='" + token + '\'' +
+                ", expiresAt=" + expiresAt +
+                ", issuedAt=" + issuedAt +
                 '}';
     }
 }
