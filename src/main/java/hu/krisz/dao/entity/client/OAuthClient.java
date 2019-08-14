@@ -8,7 +8,14 @@ import javax.persistence.Table;
 import java.util.Objects;
 
 /**
- * An entity which represents an OAuth2 client.
+ * An entity which represents an OAuth2 client. Note that
+ * {@link #resourceIds},
+ * {@link #scopes},
+ * {@link #authorizedGrantTypes},
+ * {@link #authorities} and
+ * {@link #webServerRedirectUris}
+ * are comma separated values. This is sufficient when the number of clients are easily manageable but can be worth to
+ * use a different approach if it grows big.
  *
  * @author krisztian.toth on 14-8-2019
  */
