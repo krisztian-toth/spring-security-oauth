@@ -83,5 +83,7 @@ public class PersistedRefreshTokenJwtTokenStore extends JwtTokenStore {
     public void removeRefreshToken(OAuth2RefreshToken token) {
         refreshTokenRepository.findByToken(token.getValue())
                 .ifPresent(refreshTokenRepository::delete);
+
+        // TODO revoke approvals with approvalStore
     }
 }
