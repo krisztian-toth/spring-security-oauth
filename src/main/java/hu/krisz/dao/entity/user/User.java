@@ -25,7 +25,7 @@ import java.util.UUID;
  * @author krisztian.toth on 7-8-2019
  */
 @Entity
-@Table(name = "app_user", schema = "oauth")
+@Table(name = "app_user", schema = "oauth_user")
 public class User {
 
     @Id
@@ -58,7 +58,7 @@ public class User {
     })
     @JoinTable(
             name = "user_roles",
-            schema = "oauth",
+            schema = "oauth_user",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )

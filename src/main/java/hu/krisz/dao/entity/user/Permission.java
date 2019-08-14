@@ -18,7 +18,7 @@ import java.util.UUID;
  * @author krisztian.toth on 7-8-2019
  */
 @Entity
-@Table(schema = "oauth")
+@Table(schema = "oauth_user")
 public class Permission {
     @Id
     @GeneratedValue

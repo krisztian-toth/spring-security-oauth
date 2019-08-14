@@ -25,7 +25,7 @@ import java.util.UUID;
  * @author krisztian.toth on 7-8-2019
  */
 @Entity
-@Table(schema = "oauth")
+@Table(schema = "oauth_user")
 public class Role {
     @Id
     @GeneratedValue
@@ -42,7 +42,7 @@ public class Role {
     }, fetch = FetchType.EAGER)
     @JoinTable(
             name = "role_permissions",
-            schema = "oauth",
+            schema = "oauth_user",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
