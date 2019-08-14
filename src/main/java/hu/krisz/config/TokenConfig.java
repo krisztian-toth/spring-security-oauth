@@ -35,11 +35,11 @@ public class TokenConfig {
 
     @Bean
     protected DefaultTokenServices defaultTokenServicesBean(TokenStore tokenStore,
-                                                        ClientDetailsService clientDetailsService) {
+                                                        ClientDetailsService clientDetailsServiceBean) {
         DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
         defaultTokenServices.setTokenStore(tokenStore);
         defaultTokenServices.setSupportRefreshToken(true);
-        defaultTokenServices.setClientDetailsService(clientDetailsService);
+        defaultTokenServices.setClientDetailsService(clientDetailsServiceBean);
         return defaultTokenServices;
     }
 }

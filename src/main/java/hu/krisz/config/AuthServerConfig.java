@@ -39,7 +39,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     private TokenStore tokenStore;
 
     @Autowired
-    private ClientDetailsService clientDetailsService;
+    private ClientDetailsService clientDetailsServiceBean;
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) {
@@ -57,6 +57,6 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.withClientDetails(clientDetailsService);
+        clients.withClientDetails(clientDetailsServiceBean);
     }
 }
