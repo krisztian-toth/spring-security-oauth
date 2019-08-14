@@ -21,20 +21,20 @@ public class TokenConfig {
     private String jwtSigningKey;
 
     @Bean
-    protected JwtAccessTokenConverter accessTokenConverter() {
+    protected JwtAccessTokenConverter accessTokenConverterBean() {
         JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
         jwtAccessTokenConverter.setSigningKey(jwtSigningKey);
         return jwtAccessTokenConverter;
     }
 
     @Bean
-    protected TokenStore tokenStore(JwtAccessTokenConverter jwtAccessTokenConverter,
+    protected TokenStore tokenStoreBean(JwtAccessTokenConverter jwtAccessTokenConverter,
                                     RefreshTokenRepository refreshTokenRepository) {
         return new PersistedRefreshTokenJwtTokenStore(jwtAccessTokenConverter, refreshTokenRepository);
     }
 
     @Bean
-    protected DefaultTokenServices defaultTokenServices(TokenStore tokenStore,
+    protected DefaultTokenServices defaultTokenServicesBean(TokenStore tokenStore,
                                                         ClientDetailsService clientDetailsService) {
         DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
         defaultTokenServices.setTokenStore(tokenStore);

@@ -25,17 +25,17 @@ public class ApplicationConfig {
     private static final int B_CRYPT_LOG_ROUNDS = 12;
 
     @Bean
-    protected PasswordEncoder passwordEncoder() {
+    protected PasswordEncoder passwordEncoderBean() {
         return new BCryptPasswordEncoder(B_CRYPT_LOG_ROUNDS);
     }
 
     @Bean
-    protected UserDetailsService userDetailsService(UserRepository userRepository) {
+    protected UserDetailsService userDetailsServiceBean(UserRepository userRepository) {
         return new EntityBasedUserDetailsService(userRepository);
     }
 
     @Bean
-    protected ClientDetailsService clientDetailsService(ClientRepository clientRepository) {
+    protected ClientDetailsService clientDetailsServiceBean(ClientRepository clientRepository) {
         return new EntityBasedClientDetailsService(clientRepository);
     }
 }
