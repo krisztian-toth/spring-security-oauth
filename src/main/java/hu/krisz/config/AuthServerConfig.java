@@ -1,6 +1,5 @@
 package hu.krisz.config;
 
-import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -11,6 +10,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
@@ -33,13 +33,13 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     @Autowired
-    private DataSource dataSource;
-
-    @Autowired
     private AuthenticationConfiguration authenticationConfiguration;
 
     @Autowired
     private TokenStore tokenStore;
+
+    @Autowired
+    private ClientDetailsService clientDetailsService;
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) {
@@ -57,8 +57,6 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients
-                .jdbc(dataSource)
-                .passwordEncoder(passwordEncoder);
+        clients.withClientDetails(clientDetailsService);
     }
 }

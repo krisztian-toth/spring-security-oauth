@@ -1,5 +1,7 @@
 package hu.krisz.config;
 
+import hu.krisz.clientdetails.EntityBasedClientDetailsService;
+import hu.krisz.dao.repository.ClientRepository;
 import hu.krisz.dao.repository.UserRepository;
 import hu.krisz.userdetails.EntityBasedUserDetailsService;
 import org.springframework.context.annotation.Bean;
@@ -7,9 +9,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 
 /**
- * Configuration class for shared configuration
+ * Configuration class for the application.
  *
  * @author krisztian.toth on 7-8-2019
  */
@@ -29,5 +32,10 @@ public class ApplicationConfig {
     @Bean
     protected UserDetailsService userDetailsService(UserRepository userRepository) {
         return new EntityBasedUserDetailsService(userRepository);
+    }
+
+    @Bean
+    protected ClientDetailsService clientDetailsService(ClientRepository clientRepository) {
+        return new EntityBasedClientDetailsService(clientRepository);
     }
 }
