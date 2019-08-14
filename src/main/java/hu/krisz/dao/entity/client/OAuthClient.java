@@ -35,7 +35,7 @@ public class OAuthClient {
     })
     @JoinTable(
             name = "client_resource",
-            schema = "oauth",
+            schema = "oauth_client",
             joinColumns = @JoinColumn(name = "client_id"),
             inverseJoinColumns = @JoinColumn(name = "resource_id")
     )
@@ -49,7 +49,7 @@ public class OAuthClient {
     })
     @JoinTable(
             name = "client_scope",
-            schema = "oauth",
+            schema = "oauth_client",
             joinColumns = @JoinColumn(name = "client_id"),
             inverseJoinColumns = @JoinColumn(name = "scope")
     )
@@ -63,7 +63,7 @@ public class OAuthClient {
     })
     @JoinTable(
             name = "client_grant",
-            schema = "oauth",
+            schema = "oauth_client",
             joinColumns = @JoinColumn(name = "client_id"),
             inverseJoinColumns = @JoinColumn(name = "grant")
     )
@@ -77,7 +77,7 @@ public class OAuthClient {
     })
     @JoinTable(
             name = "client_authority",
-            schema = "oauth",
+            schema = "oauth_client",
             joinColumns = @JoinColumn(name = "client_id"),
             inverseJoinColumns = @JoinColumn(name = "authority")
     )
