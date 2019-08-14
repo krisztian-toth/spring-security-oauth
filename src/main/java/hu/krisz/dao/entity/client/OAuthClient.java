@@ -1,16 +1,10 @@
 package hu.krisz.dao.entity.client;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -21,82 +15,84 @@ import java.util.Objects;
 @Entity
 @Table(name = "client", schema = "oauth_client")
 public class OAuthClient {
+
+    /**
+     * The ID of the client we create.
+     */
     @Id
     private String clientId;
 
+    /**
+     * The (usually encoded) secret of the client. Apps which cannot hide the client secret (e.g. SPA, mobile apps)
+     * don't require a client secret and a supported grant type must be used, therefore this field is optional.
+     */
     @Column
     private String clientSecret;
 
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE,
-            CascadeType.REFRESH,
-            CascadeType.DETACH
-    })
-    @JoinTable(
-            name = "client_resource",
-            schema = "oauth_client",
-            joinColumns = @JoinColumn(name = "client_id"),
-            inverseJoinColumns = @JoinColumn(name = "resource_id")
-    )
-    private List<OAuthResource> resourceIds = new ArrayList<>();
+    /**
+     * The resource server handles authenticated requests after an application with this client has obtained an access
+     * token. If we want to limit the usage of access tokens created by certain {@link OAuthClient}s we can specify
+     * those resource's IDs here. The defined resource IDs are usually contained in the token's "aud" (audience) claim
+     * which can be validated by the resource server. The usage of this field is optional.
+     */
+    @Column
+    private String resourceIds;
 
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE,
-            CascadeType.REFRESH,
-            CascadeType.DETACH
-    })
-    @JoinTable(
-            name = "client_scope",
-            schema = "oauth_client",
-            joinColumns = @JoinColumn(name = "client_id"),
-            inverseJoinColumns = @JoinColumn(name = "scope")
-    )
-    private List<OAuthScope> scopes = new ArrayList<>();
+    /**
+     * Scopes are useful when granting access for 3rd party apps to user's accounts. Should be provided.
+     *
+     * @see <a href="https://oauth.net/2/scope/">https://oauth.net/2/scope/</a>
+     */
+    @Column
+    private String scopes;
 
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE,
-            CascadeType.REFRESH,
-            CascadeType.DETACH
-    })
-    @JoinTable(
-            name = "client_grant",
-            schema = "oauth_client",
-            joinColumns = @JoinColumn(name = "client_id"),
-            inverseJoinColumns = @JoinColumn(name = "grant_type")
-    )
-    private List<OAuthGrantType> authorizedGrantTypes = new ArrayList<>();
+    /**
+     * A grant type is basically a method to authenticate a user or client. Should be provided.
+     *
+     * @see <a href="https://oauth.net/2/grant-types/">https://oauth.net/2/grant-types/</a>
+     */
+    @Column
+    private String authorizedGrantTypes;
 
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE,
-            CascadeType.REFRESH,
-            CascadeType.DETACH
-    })
-    @JoinTable(
-            name = "client_authority",
-            schema = "oauth_client",
-            joinColumns = @JoinColumn(name = "client_id"),
-            inverseJoinColumns = @JoinColumn(name = "authority")
-    )
-    private List<OAuthAuthority> authorities;
+    /**
+     * Some grant types doesn't require a user for authentication. If the client doesn't act on behalf of a user (e.g.
+     * client credentials grant type) then these authorities will be bound to the authentication token instead of user
+     * authorities. Optional.
+     */
+    @Column
+    private String authorities;
 
+    /**
+     * Redirect URIs where the client is allowed to redirect to for authorization. Only relevant when a redirect is
+     * necessary to complete the authorization grant, therefore this field is optional.
+     */
     @Column
     private String webServerRedirectUri;
 
-    @Column(nullable = false)
+    /**
+     * Validity for access token in seconds. Should be provided and short-lived.
+     */
+    @Column
     private Integer accessTokenValidity;
 
-    @Column(nullable = false)
+    /**
+     * Validity for refresh token in seconds. Should be provided.
+     */
+    @Column
     private Integer refreshTokenValidity;
 
+    /**
+     * A serialised JSON object with any additional information of the client. Optional.
+     */
     @Column
     private String additionalInformation;
 
+    /**
+     * Either the literal string "true" to skip OAuth user approval or scope patterns where you want to enable auto
+     * approval. Optional.
+     */
     @Column
-    private Boolean autoApprove;
+    private String autoApprove;
 
     public String getClientId() {
         return clientId;
@@ -106,19 +102,19 @@ public class OAuthClient {
         return clientSecret;
     }
 
-    public List<OAuthResource> getResourceIds() {
+    public String getResourceIds() {
         return resourceIds;
     }
 
-    public List<OAuthScope> getScopes() {
+    public String getScopes() {
         return scopes;
     }
 
-    public List<OAuthGrantType> getAuthorizedGrantTypes() {
+    public String getAuthorizedGrantTypes() {
         return authorizedGrantTypes;
     }
 
-    public List<OAuthAuthority> getAuthorities() {
+    public String getAuthorities() {
         return authorities;
     }
 
@@ -138,7 +134,7 @@ public class OAuthClient {
         return additionalInformation;
     }
 
-    public Boolean getAutoApprove() {
+    public String getAutoApprove() {
         return autoApprove;
     }
 
@@ -159,7 +155,11 @@ public class OAuthClient {
     public String toString() {
         return "OAuthClient{" +
                 "clientId='" + clientId + '\'' +
-                ", clientSecret=[PROTECTED]'\'" +
+                ", clientSecret=[PROTECTED]" +
+                ", resourceIds='" + resourceIds + '\'' +
+                ", scopes='" + scopes + '\'' +
+                ", authorizedGrantTypes='" + authorizedGrantTypes + '\'' +
+                ", authorities='" + authorities + '\'' +
                 ", webServerRedirectUri='" + webServerRedirectUri + '\'' +
                 ", accessTokenValidity=" + accessTokenValidity +
                 ", refreshTokenValidity=" + refreshTokenValidity +
