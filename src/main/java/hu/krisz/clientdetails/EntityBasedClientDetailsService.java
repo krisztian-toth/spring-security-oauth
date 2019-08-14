@@ -29,7 +29,7 @@ public class EntityBasedClientDetailsService implements ClientDetailsService {
                         client.getScopes(),
                         client.getAuthorizedGrantTypes(),
                         client.getAuthorities(),
-                        client.getWebServerRedirectUri()
+                        client.getWebServerRedirectUris()
                 )).orElseThrow(() -> new NoSuchClientException("No client found with id=" + clientId));
     }
 }

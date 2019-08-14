@@ -67,7 +67,7 @@ public class OAuthClient {
      * necessary to complete the authorization grant, therefore this field is optional.
      */
     @Column
-    private String webServerRedirectUri;
+    private String webServerRedirectUris;
 
     /**
      * Validity for access token in seconds. Should be provided and short-lived.
@@ -118,8 +118,8 @@ public class OAuthClient {
         return authorities;
     }
 
-    public String getWebServerRedirectUri() {
-        return webServerRedirectUri;
+    public String getWebServerRedirectUris() {
+        return webServerRedirectUris;
     }
 
     public Integer getAccessTokenValidity() {
@@ -160,7 +160,7 @@ public class OAuthClient {
                 ", scopes='" + scopes + '\'' +
                 ", authorizedGrantTypes='" + authorizedGrantTypes + '\'' +
                 ", authorities='" + authorities + '\'' +
-                ", webServerRedirectUri='" + webServerRedirectUri + '\'' +
+                ", webServerRedirectUri='" + webServerRedirectUris + '\'' +
                 ", accessTokenValidity=" + accessTokenValidity +
                 ", refreshTokenValidity=" + refreshTokenValidity +
                 ", additionalInformation='" + additionalInformation + '\'' +
