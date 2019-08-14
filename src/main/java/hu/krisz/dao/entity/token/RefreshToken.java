@@ -15,7 +15,7 @@ import java.util.Objects;
  * @author krisztian.toth on 8-8-2019
  */
 @Entity
-@Table(schema = "oauth")
+@Table(schema = "oauth_token")
 public class RefreshToken {
     @Id
     @Column(nullable = false)
