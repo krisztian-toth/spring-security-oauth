@@ -26,6 +26,10 @@ public class OAuthAuthority {
     private OAuthAuthority() {
     }
 
+    public String getAuthority() {
+        return authority;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
