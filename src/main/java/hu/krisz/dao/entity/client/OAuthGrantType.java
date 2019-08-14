@@ -16,17 +16,17 @@ import java.util.Objects;
 @Table(name = "grant_type", schema = "oauth_client")
 public class OAuthGrantType {
     @Id
-    private String grant;
+    private String grantType;
 
-    public OAuthGrantType(String grant) {
-        this.grant = grant;
+    public OAuthGrantType(String grantType) {
+        this.grantType = grantType;
     }
 
     private OAuthGrantType() {
     }
 
-    public String getGrant() {
-        return grant;
+    public String getGrantType() {
+        return grantType;
     }
 
     @Override
@@ -34,18 +34,18 @@ public class OAuthGrantType {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OAuthGrantType that = (OAuthGrantType) o;
-        return Objects.equals(grant, that.grant);
+        return Objects.equals(grantType, that.grantType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(grant);
+        return Objects.hash(grantType);
     }
 
     @Override
     public String toString() {
         return "OAuthGrantType{" +
-                "grant='" + grant + '\'' +
+                "grantType='" + grantType + '\'' +
                 '}';
     }
 }
