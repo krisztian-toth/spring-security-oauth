@@ -14,7 +14,7 @@ import java.util.Objects;
  * @author krisztian.toth on 14-8-2019
  */
 @Entity
-@Table(name = "oauth_authority", schema = "oauth")
+@Table(name = "authority", schema = "oauth_client")
 public class OAuthAuthority {
     @Id
     private String authority;

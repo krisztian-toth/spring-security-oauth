@@ -13,7 +13,7 @@ import java.util.Objects;
  * @author krisztian.toth on 14-8-2019
  */
 @Entity
-@Table(name = "oauth_grant_type")
+@Table(name = "grant_type", schema = "oauth_client")
 public class OAuthGrantType {
     @Id
     private String grant;

@@ -19,7 +19,7 @@ import java.util.Objects;
  * @author krisztian.toth on 14-8-2019
  */
 @Entity
-@Table(name = "oauth_client", schema = "oauth")
+@Table(name = "client", schema = "oauth_client")
 public class OAuthClient {
     @Id
     private String clientId;

@@ -16,7 +16,7 @@ import java.util.Objects;
  * @author krisztian.toth on 14-8-2019
  */
 @Entity
-@Table(name = "oauth_resource", schema = "oauth")
+@Table(name = "resource", schema = "oauth_client")
 public class OAuthResource {
     @Id
     private String resourceId;
