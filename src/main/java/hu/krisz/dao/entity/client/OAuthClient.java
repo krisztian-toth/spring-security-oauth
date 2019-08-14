@@ -65,7 +65,7 @@ public class OAuthClient {
             name = "client_grant",
             schema = "oauth_client",
             joinColumns = @JoinColumn(name = "client_id"),
-            inverseJoinColumns = @JoinColumn(name = "grant")
+            inverseJoinColumns = @JoinColumn(name = "grant_type")
     )
     private List<OAuthGrantType> authorizedGrantTypes = new ArrayList<>();
 
