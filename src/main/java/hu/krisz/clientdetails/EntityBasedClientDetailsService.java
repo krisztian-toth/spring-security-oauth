@@ -23,13 +23,18 @@ public class EntityBasedClientDetailsService implements ClientDetailsService {
     @Override
     public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
         return clientRepository.findById(clientId)
-                .map(client -> new BaseClientDetails(
-                        client.getClientId(),
-                        client.getResourceIds(),
-                        client.getScopes(),
-                        client.getAuthorizedGrantTypes(),
-                        client.getAuthorities(),
-                        client.getWebServerRedirectUris()
-                )).orElseThrow(() -> new NoSuchClientException("No client found with id=" + clientId));
+                .map(client -> {
+                    BaseClientDetails baseClientDetails = new BaseClientDetails(
+                            client.getClientId(),
+                            client.getResourceIds(),
+                            client.getScopes(),
+                            client.getAuthorizedGrantTypes(),
+                            client.getAuthorities(),
+                            client.getWebServerRedirectUris()
+                    );
+                    baseClientDetails.setAccessTokenValiditySeconds(client.getAccessTokenValidity());
+                    baseClientDetails.setRefreshTokenValiditySeconds(client.getRefreshTokenValidity());
+                    return baseClientDetails;
+                }).orElseThrow(() -> new NoSuchClientException("No client found with id=" + clientId));
     }
 }
