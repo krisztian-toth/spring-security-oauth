@@ -9,12 +9,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.common.DefaultExpiringOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.ExpiringOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
+import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * JWT Token store which persists the refresh token.
@@ -66,8 +70,9 @@ public class PersistedRefreshTokenJwtTokenStore extends JwtTokenStore {
                 refreshTokenRepository.findByUsername(username).ifPresent(refreshTokenRepository::delete);
 
                 Date expiration = ((ExpiringOAuth2RefreshToken) refreshToken).getExpiration();
-                refreshTokenRepository.save(new RefreshToken(refreshToken.getValue(), username, expiration.toInstant(),
-                        Instant.now()));
+                String clientId = authentication.getOAuth2Request().getClientId();
+                refreshTokenRepository.save(new RefreshToken(refreshToken.getValue(), username, clientId,
+                        expiration.toInstant(), Instant.now()));
             }
         } else {
             LOG.warn("The provided refresh token is not of type ExpiringOAuth2RefreshToken, skipping persisting...");

@@ -20,17 +20,34 @@ public class RefreshToken {
     @Column(nullable = false)
     private String token;
 
+    /**
+     * User for which the token was issued.
+     */
     @Column(unique = true)
     private String username;
 
+    /**
+     * Client which issued the token. Used to validate the client which issues the refresh is the same which
+     * originally requested the token.
+     */
+    @Column
+    private String clientId;
+
+    /**
+     * When the token expires.
+     */
     @Column
     private Instant expiresAt;
 
+    /**
+     * When the token was issued.
+     */
     private Instant issuedAt;
 
-    public RefreshToken(String token, String username, Instant expiresAt, Instant issuedAt) {
+    public RefreshToken(String token, String username, String clientId, Instant expiresAt, Instant issuedAt) {
         this.token = token;
         this.username = username;
+        this.clientId = clientId;
         this.expiresAt = expiresAt;
         this.issuedAt = issuedAt;
     }
@@ -47,6 +64,10 @@ public class RefreshToken {
 
     public String getUsername() {
         return username;
+    }
+
+    public String getClientId() {
+        return clientId;
     }
 
     public Instant getExpiresAt() {
@@ -75,6 +96,7 @@ public class RefreshToken {
         return "RefreshToken{" +
                 "token='" + token + '\'' +
                 ", username='" + username + '\'' +
+                ", clientId='" + clientId + '\'' +
                 ", expiresAt=" + expiresAt +
                 ", issuedAt=" + issuedAt +
                 '}';
