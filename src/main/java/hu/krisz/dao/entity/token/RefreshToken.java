@@ -34,6 +34,12 @@ public class RefreshToken {
     private String clientId;
 
     /**
+     * The grant types which was used to issue this refresh token.
+     */
+    @Column
+    private String grantType;
+
+    /**
      * When the token expires.
      */
     @Column
@@ -44,10 +50,12 @@ public class RefreshToken {
      */
     private Instant issuedAt;
 
-    public RefreshToken(String token, String username, String clientId, Instant expiresAt, Instant issuedAt) {
+    public RefreshToken(String token, String username, String clientId, String grantType,
+                        Instant expiresAt, Instant issuedAt) {
         this.token = token;
         this.username = username;
         this.clientId = clientId;
+        this.grantType = grantType;
         this.expiresAt = expiresAt;
         this.issuedAt = issuedAt;
     }
@@ -64,6 +72,10 @@ public class RefreshToken {
 
     public String getUsername() {
         return username;
+    }
+
+    public String getGrantType() {
+        return grantType;
     }
 
     public String getClientId() {
@@ -97,6 +109,7 @@ public class RefreshToken {
                 "token='" + token + '\'' +
                 ", username='" + username + '\'' +
                 ", clientId='" + clientId + '\'' +
+                ", grantType='" + grantType + '\'' +
                 ", expiresAt=" + expiresAt +
                 ", issuedAt=" + issuedAt +
                 '}';

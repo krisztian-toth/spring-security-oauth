@@ -71,8 +71,9 @@ public class PersistedRefreshTokenJwtTokenStore extends JwtTokenStore {
 
                 Date expiration = ((ExpiringOAuth2RefreshToken) refreshToken).getExpiration();
                 String clientId = authentication.getOAuth2Request().getClientId();
+                String grantType = authentication.getOAuth2Request().getGrantType();
                 refreshTokenRepository.save(new RefreshToken(refreshToken.getValue(), username, clientId,
-                        expiration.toInstant(), Instant.now()));
+                        grantType, expiration.toInstant(), Instant.now()));
             }
         } else {
             LOG.warn("The provided refresh token is not of type ExpiringOAuth2RefreshToken, skipping persisting...");
