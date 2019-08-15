@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
+import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -65,7 +66,8 @@ public class PersistedRefreshTokenJwtTokenStore extends JwtTokenStore {
                 refreshTokenRepository.findByUsername(username).ifPresent(refreshTokenRepository::delete);
 
                 Date expiration = ((ExpiringOAuth2RefreshToken) refreshToken).getExpiration();
-                refreshTokenRepository.save(new RefreshToken(refreshToken.getValue(), username, expiration.toInstant()));
+                refreshTokenRepository.save(new RefreshToken(refreshToken.getValue(), username, expiration.toInstant(),
+                        Instant.now()));
             }
         } else {
             LOG.warn("The provided refresh token is not of type ExpiringOAuth2RefreshToken, skipping persisting...");

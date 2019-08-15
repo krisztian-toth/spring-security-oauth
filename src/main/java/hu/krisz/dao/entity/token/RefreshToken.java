@@ -4,7 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -27,13 +26,13 @@ public class RefreshToken {
     @Column
     private Instant expiresAt;
 
-    @CreatedDate
     private Instant issuedAt;
 
-    public RefreshToken(String token, String username, Instant expiresAt) {
+    public RefreshToken(String token, String username, Instant expiresAt, Instant issuedAt) {
         this.token = token;
         this.username = username;
         this.expiresAt = expiresAt;
+        this.issuedAt = issuedAt;
     }
 
     /**
