@@ -5,6 +5,7 @@ import hu.krisz.token.PersistedRefreshTokenJwtTokenStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -29,8 +30,11 @@ public class TokenConfig {
 
     @Bean
     protected TokenStore tokenStoreBean(JwtAccessTokenConverter jwtAccessTokenConverter,
-                                    RefreshTokenRepository refreshTokenRepository) {
-        return new PersistedRefreshTokenJwtTokenStore(jwtAccessTokenConverter, refreshTokenRepository);
+                                        RefreshTokenRepository refreshTokenRepository,
+                                        ClientDetailsService clientDetailsService,
+                                        UserDetailsService userDetailsService) {
+        return new PersistedRefreshTokenJwtTokenStore(jwtAccessTokenConverter, refreshTokenRepository,
+                clientDetailsService, userDetailsService);
     }
 
     @Bean

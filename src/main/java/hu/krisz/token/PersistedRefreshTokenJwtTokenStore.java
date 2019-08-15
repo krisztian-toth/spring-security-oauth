@@ -4,18 +4,24 @@ import hu.krisz.dao.entity.token.RefreshToken;
 import hu.krisz.dao.repository.RefreshTokenRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.common.DefaultExpiringOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.ExpiringOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
+import org.springframework.security.oauth2.provider.ClientDetails;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,17 +35,29 @@ public class PersistedRefreshTokenJwtTokenStore extends JwtTokenStore {
 
     private static final Log LOG = LogFactory.getLog(PersistedRefreshTokenJwtTokenStore.class);
 
+    private static final String CLIENT_ID = "client_id";
+    private static final String GRANT_TYPE = "grant_type";
+
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ClientDetailsService clientDetailsService;
+    private final UserDetailsService userDetailsService;
 
     /**
      * Create a JwtTokenStore with this token enhancer (should be shared with the DefaultTokenServices if used).
      *
      * @param jwtTokenEnhancer the {@link JwtAccessTokenConverter}
+     * @param refreshTokenRepository the {@link RefreshTokenRepository}
+     * @param clientDetailsService the {@link ClientDetailsService}
+     * @param userDetailsService the {@link UserDetailsService}
      */
     public PersistedRefreshTokenJwtTokenStore(JwtAccessTokenConverter jwtTokenEnhancer,
-                                              RefreshTokenRepository refreshTokenRepository) {
+                                              RefreshTokenRepository refreshTokenRepository,
+                                              ClientDetailsService clientDetailsService,
+                                              UserDetailsService userDetailsService) {
         super(jwtTokenEnhancer);
         this.refreshTokenRepository = refreshTokenRepository;
+        this.clientDetailsService = clientDetailsService;
+        this.userDetailsService = userDetailsService;
     }
 
     /**
@@ -85,6 +103,8 @@ public class PersistedRefreshTokenJwtTokenStore extends JwtTokenStore {
         return refreshTokenRepository.findByToken(tokenValue)
                 .map(token -> new DefaultExpiringOAuth2RefreshToken(token.getToken(), Date.from(token.getExpiresAt())))
                 .orElse(null);
+
+        // TODO add approvals with approvalStore
     }
 
     @Override
@@ -93,5 +113,34 @@ public class PersistedRefreshTokenJwtTokenStore extends JwtTokenStore {
                 .ifPresent(refreshTokenRepository::delete);
 
         // TODO revoke approvals with approvalStore
+    }
+
+    @Override
+    public OAuth2Authentication readAuthenticationForRefreshToken(OAuth2RefreshToken token) {
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(token.getValue())
+                .orElseThrow(() -> new InvalidTokenException("Could not find token=" + token.getValue()));
+        String clientId = refreshToken.getClientId();
+        ClientDetails clientDetails = clientDetailsService.loadClientByClientId(refreshToken.getClientId());
+        if (clientDetails == null) {
+            throw new InvalidTokenException("could not find client for token=" + token.getValue());
+        }
+
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(CLIENT_ID, clientId);
+        parameters.put(GRANT_TYPE, refreshToken.getGrantType());
+
+        Authentication user = null;
+        Collection<? extends GrantedAuthority> authorities;
+        UserDetails userDetails = userDetailsService.loadUserByUsername(refreshToken.getUsername());
+        if (userDetails != null) {
+            user = new UsernamePasswordAuthenticationToken(userDetails, "N/A", userDetails.getAuthorities());
+            authorities = user.getAuthorities();
+        } else {
+            authorities = clientDetails.getAuthorities();
+        }
+
+        OAuth2Request request = new OAuth2Request(parameters, clientId, authorities, true, clientDetails.getScope(),
+                clientDetails.getResourceIds(), null, null, null);
+        return new OAuth2Authentication(request, user);
     }
 }
