@@ -43,8 +43,7 @@ public class TokenConfig {
 
     @Bean
     protected Key signingKeyBean() {
-        return Keys.secretKeyFor(SignatureAlgorithm.HS256);
-//        return Keys.hmacShaKeyFor(jwtSigningKey.getBytes(StandardCharsets.UTF_8));
+        return Keys.secretKeyFor(SignatureAlgorithm.HS256); // read from configuration
     }
 
     @Bean
@@ -72,6 +71,7 @@ public class TokenConfig {
         defaultTokenServices.setClientDetailsService(clientDetailsServiceBean);
         defaultTokenServices.setTokenEnhancer(accessTokenEnhancer);
         defaultTokenServices.setSupportRefreshToken(true);
+        defaultTokenServices.setReuseRefreshToken(false);
         return defaultTokenServices;
     }
 }
