@@ -64,6 +64,30 @@ public class User {
     )
     private List<Role> roles = new ArrayList<>();
 
+    /**
+     * Constructor for {@link User}.
+     *
+     * @param username the username
+     * @param password the (encoded) password
+     * @param companyName the company name
+     * @param enabled whether the user enabled or not
+     */
+    public User(String username, String password, String companyName, Boolean enabled) {
+        this.username = username;
+        this.password = password;
+        this.companyName = companyName;
+        this.enabled = enabled;
+    }
+
+    /**
+     * Adds a {@link Role} to the user.
+     *
+     * @param role the {@link Role} to add
+     */
+    public void addRole(Role role) {
+        this.roles.add(role);
+    }
+
     public UUID getId() {
         return id;
     }
