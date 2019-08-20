@@ -10,50 +10,21 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
- * Functional test class for testing the authorization endpoints with password grant.
+ * Functional test class for testing the authorization endpoints with client credentials grant.
  *
- * @author krisztian.toth on 19-8-2019
+ * @author krisztian.toth on 20-8-2019
  */
-public class PasswordGrantTest extends AbstractFunctionalTest {
+public class ClientCredentialsGrantTest extends AbstractFunctionalTest {
 
     @Test
-    public void testGrantWithClientWithClientSecret() throws Exception {
+    public void testGrantWithClientWithClientCredentials() throws Exception {
         createOAuthClientWithSecret(AN_UNENCRYPTED_CLIENT_SECRET);
-        createUserWith(true);
 
-        String content = String.format("client_id=%s&client_secret=%s&username=%s&password=%s&grant_type=%s",
-                A_CLIENT_ID, AN_UNENCRYPTED_CLIENT_SECRET, A_USERNAME, UNENCRYPTED_PASSWORD, PASSWORD_GRANT_TYPE);
-
-        String contentAsString = mockMvc.perform(MockMvcRequestBuilders.post(OAUTH_TOKEN_ENDPOINT)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(content))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content()
-                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON_UTF8))
-                .andDo(MockMvcResultHandlers.print())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        Map contentAsMap = objectMapper.readValue(contentAsString, Map.class);
-
-        String accessToken = (String) contentAsMap.get("access_token");
-        assertNotNull(accessToken);
-        assertNotNull(contentAsMap.get("refresh_token"));
-
-        // assert that the access token is indeed a JWT.
-        assertNotNull(jwtDecoderEncoder.decode(accessToken));
-    }
-
-    @Test
-    public void testGrantWithClientWithoutClientSecret() throws Exception {
-        createOAuthClientWithSecret(AN_EMPTY_CLIENT_SECRET);
-        createUserWith(true);
-
-        String content = String.format("client_id=%s&username=%s&password=%s&grant_type=%s",
-                A_CLIENT_ID, A_USERNAME, UNENCRYPTED_PASSWORD, PASSWORD_GRANT_TYPE);
+        String content = String.format("client_id=%s&client_secret=%s&grant_type=%s",
+                A_CLIENT_ID, AN_UNENCRYPTED_CLIENT_SECRET, CLIENT_CREDENTIALS_GRANT_TYPE);
 
         String contentAsString = mockMvc.perform(MockMvcRequestBuilders.post(OAUTH_TOKEN_ENDPOINT)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -70,24 +41,29 @@ public class PasswordGrantTest extends AbstractFunctionalTest {
 
         String accessToken = (String) contentAsMap.get("access_token");
         assertNotNull(accessToken);
-        assertNotNull(contentAsMap.get("refresh_token"));
 
-        // assert that the access token is indeed a JWT.
+        // there should not be a refresh token when using the client credentials grant type
+        assertNull(contentAsMap.get("refresh_token"));
+
+        // assert that the access token is a JWT.
         assertNotNull(jwtDecoderEncoder.decode(accessToken));
     }
 
+    /**
+     * NOTE: even though this passes, client credentials grant type should never be allowed on clients without a client
+     * secret
+     */
     @Test
-    public void testGrantWhenUserNotFound() throws Exception {
+    public void testGrantWithClientWithoutClientCredentials() throws Exception {
         createOAuthClientWithSecret(AN_EMPTY_CLIENT_SECRET);
-        createUserWith(true);
 
-        String content = String.format("client_id=%s&username=%s&password=%s&grant_type=%s",
-                A_CLIENT_ID, A_USERNAME, UNENCRYPTED_PASSWORD, PASSWORD_GRANT_TYPE);
+        String content = String.format("client_id=%s&grant_type=%s",
+                A_CLIENT_ID, CLIENT_CREDENTIALS_GRANT_TYPE);
 
         String contentAsString = mockMvc.perform(MockMvcRequestBuilders.post(OAUTH_TOKEN_ENDPOINT)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .content(content))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON_UTF8))
                 .andDo(MockMvcResultHandlers.print())
@@ -97,32 +73,14 @@ public class PasswordGrantTest extends AbstractFunctionalTest {
 
         Map contentAsMap = objectMapper.readValue(contentAsString, Map.class);
 
-        assertEquals("invalid_grant", contentAsMap.get("error"));
-        assertEquals("User is disabled", contentAsMap.get("error_description"));
-    }
+        String accessToken = (String) contentAsMap.get("access_token");
+        assertNotNull(accessToken);
 
-    @Test
-    public void testGrantWhenUserIsNotActive() throws Exception {
-        createOAuthClientWithSecret(AN_EMPTY_CLIENT_SECRET);
-        createUserWith(false);
+        // there should not be a refresh token when using the client credentials grant type
+        assertNull(contentAsMap.get("refresh_token"));
 
-        String content = String.format("client_id=%s&username=%s&password=%s&grant_type=%s",
-                A_CLIENT_ID, A_USERNAME, UNENCRYPTED_PASSWORD, PASSWORD_GRANT_TYPE);
-
-        String contentAsString = mockMvc.perform(MockMvcRequestBuilders.post(OAUTH_TOKEN_ENDPOINT)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(content))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.content()
-                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON_UTF8))
-                .andDo(MockMvcResultHandlers.print())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        Map contentAsMap = objectMapper.readValue(contentAsString, Map.class);
-
-        assertEquals("invalid_grant", contentAsMap.get("error"));
+        // assert that the access token is a JWT.
+        assertNotNull(jwtDecoderEncoder.decode(accessToken));
     }
 
     @Test
@@ -130,7 +88,7 @@ public class PasswordGrantTest extends AbstractFunctionalTest {
         createUserWith(true);
 
         String content = String.format("client_id=%s&username=%s&password=%s&grant_type=%s",
-                A_CLIENT_ID, A_USERNAME, UNENCRYPTED_PASSWORD, PASSWORD_GRANT_TYPE);
+                A_CLIENT_ID, A_USERNAME, UNENCRYPTED_PASSWORD, CLIENT_CREDENTIALS_GRANT_TYPE);
 
         String contentAsString = mockMvc.perform(MockMvcRequestBuilders.post(OAUTH_TOKEN_ENDPOINT)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)

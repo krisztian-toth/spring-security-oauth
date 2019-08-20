@@ -23,8 +23,6 @@ import static org.junit.Assert.assertNull;
 public class RefreshTokenGrantTest extends AbstractFunctionalTest {
 
     private static final String A_REFRESH_TOKEN = "refreshToken";
-    private static final String PASSWORD_GRANT_TYPE = "password";
-    private static final String REFRESH_TOKEN_GRANT_TYPE = "refresh_token";
     private static final Instant NOW = Instant.now();
     private static final Instant NOW_PLUS_100_SECONDS = Instant.now().plusSeconds(100);
     private static final Instant NOW_MINUS_100_SECONDS = Instant.now().minusSeconds(100);

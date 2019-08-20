@@ -29,17 +29,33 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureTestEntityManager
 @Transactional
 public abstract class AbstractFunctionalTest {
+
+    // ===========================
+    //          ENDPOINTS
+    // ===========================
     static final String OAUTH_TOKEN_ENDPOINT = "/oauth/token";
 
+    // ===========================
+    //         GRANT TYPES
+    // ===========================
+    static final String AUTHORIZATION_CODE_GRANT_TYPE = "authorization_code";
+    static final String CLIENT_CREDENTIALS_GRANT_TYPE = "client_credentials";
+    static final String REFRESH_TOKEN_GRANT_TYPE = "refresh_token";
+    static final String PASSWORD_GRANT_TYPE = "password";
+
+    // ===========================
+    //       USER ATTRIBUTES
+    // ===========================
     static final String A_USERNAME = "username";
     static final String UNENCRYPTED_PASSWORD = "pass123";
-
     private static final String A_COMPANY_NAME = "company";
 
+    // ===========================
+    //      CLIENT ATTRIBUTES
+    // ===========================
     static final String A_CLIENT_ID = "clientId";
     static final String AN_EMPTY_CLIENT_SECRET = null;
     static final String AN_UNENCRYPTED_CLIENT_SECRET = "clientSecret123";
-
     private static final String RESOURCE_IDS = null;
     private static final String SCOPES = "profile";
     private static final String GRANT_TYPES = "password,refresh_token,client_credentials";
