@@ -79,7 +79,6 @@ public class PasswordGrantTest extends AbstractFunctionalTest {
     @Test
     public void testGrantWhenUserNotFound() throws Exception {
         createOAuthClientWithSecret(AN_EMPTY_CLIENT_SECRET);
-        createUserWith(true);
 
         String content = String.format("client_id=%s&username=%s&password=%s&grant_type=%s",
                 A_CLIENT_ID, A_USERNAME, UNENCRYPTED_PASSWORD, PASSWORD_GRANT_TYPE);
