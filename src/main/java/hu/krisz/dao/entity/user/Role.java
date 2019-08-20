@@ -58,6 +58,11 @@ public class Role {
     }
 
     /**
+     * Default constructor for Hibernate.
+     */
+    private Role() {}
+
+    /**
      * Adds a permission to this role and vice versa.
      *
      * @param permission the permission to add to this role

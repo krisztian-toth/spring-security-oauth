@@ -118,6 +118,11 @@ public class OAuthClient {
         this.autoApprove = autoApprove;
     }
 
+    /**
+     * Default constructor for Hibernate.
+     */
+    private OAuthClient() {}
+
     public String getClientId() {
         return clientId;
     }

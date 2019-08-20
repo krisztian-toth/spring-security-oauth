@@ -49,6 +49,11 @@ public class Permission {
         this.description = description;
     }
 
+    /**
+     * Default constructor for Hibernate.
+     */
+    private Permission() {}
+
     public UUID getId() {
         return id;
     }

@@ -80,6 +80,11 @@ public class User {
     }
 
     /**
+     * Default constructor for Hibernate.
+     */
+    private User() {}
+
+    /**
      * Adds a {@link Role} to the user.
      *
      * @param role the {@link Role} to add
