@@ -38,6 +38,17 @@ public class Permission {
     }, mappedBy = "permissions")
     private List<Role> roles;
 
+    /**
+     * Constructor for {@link Permission}.
+     *
+     * @param name the name of this permission
+     * @param description a description about this permission (what does it grant exactly)
+     */
+    public Permission(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     public UUID getId() {
         return id;
     }

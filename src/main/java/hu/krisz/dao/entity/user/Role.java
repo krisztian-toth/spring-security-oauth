@@ -49,6 +49,15 @@ public class Role {
     private List<Permission> permissions = new ArrayList<>();
 
     /**
+     * Constructor for {@link Role}.
+     *
+     * @param name name of the role
+     */
+    public Role(Name name) {
+        this.name = name;
+    }
+
+    /**
      * Adds a permission to this role and vice versa.
      *
      * @param permission the permission to add to this role
@@ -106,13 +115,8 @@ public class Role {
         MANAGER,
 
         /**
-         * Waiters in company.
+         * User of the application.
          */
-        WAITER,
-
-        /**
-         * Staff in company.
-         */
-        STAFF;
+        USER;
     }
 }
