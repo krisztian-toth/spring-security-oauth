@@ -101,6 +101,23 @@ public class OAuthClient {
     @Column
     private String autoApprove;
 
+    public OAuthClient(String clientId, String clientSecret, String resourceIds, String scopes,
+                       String authorizedGrantTypes, String authorities, String webServerRedirectUris,
+                       Integer accessTokenValidity, Integer refreshTokenValidity, String additionalInformation,
+                       String autoApprove) {
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
+        this.resourceIds = resourceIds;
+        this.scopes = scopes;
+        this.authorizedGrantTypes = authorizedGrantTypes;
+        this.authorities = authorities;
+        this.webServerRedirectUris = webServerRedirectUris;
+        this.accessTokenValidity = accessTokenValidity;
+        this.refreshTokenValidity = refreshTokenValidity;
+        this.additionalInformation = additionalInformation;
+        this.autoApprove = autoApprove;
+    }
+
     public String getClientId() {
         return clientId;
     }
