@@ -92,7 +92,7 @@ public class JwtDecoderEncoder {
         JwtBuilder jwtBuilder = Jwts.builder()
                 .setId(accessToken.getValue())
                 .setExpiration(accessToken.getExpiration())
-                .claim(CLIENT_ID, authentication.isClientOnly())
+                .claim(CLIENT_ID, authentication.getOAuth2Request().getClientId())
                 .claim(GRANT_TYPE, authentication.getOAuth2Request().getGrantType())
                 .claim(SCOPE, accessToken.getScope())
                 .claim(AUDIENCE, authentication.getOAuth2Request().getResourceIds());
