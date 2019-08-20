@@ -32,6 +32,7 @@ public class EntityBasedClientDetailsService implements ClientDetailsService {
                             client.getAuthorities(),
                             client.getWebServerRedirectUris()
                     );
+                    baseClientDetails.setClientSecret(client.getClientSecret());
                     baseClientDetails.setAccessTokenValiditySeconds(client.getAccessTokenValidity());
                     baseClientDetails.setRefreshTokenValiditySeconds(client.getRefreshTokenValidity());
                     return baseClientDetails;
