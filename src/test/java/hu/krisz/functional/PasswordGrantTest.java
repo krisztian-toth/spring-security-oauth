@@ -41,8 +41,12 @@ public class PasswordGrantTest extends AbstractFunctionalTest {
 
         Map contentAsMap = objectMapper.readValue(contentAsString, Map.class);
 
-        assertNotNull(contentAsMap.get("access_token"));
+        String accessToken = (String) contentAsMap.get("access_token");
+        assertNotNull(accessToken);
         assertNotNull(contentAsMap.get("refresh_token"));
+
+        // assert that the access token is indeed a JWT.
+        assertNotNull(jwtDecoderEncoder.decode(accessToken));
     }
 
     @Test
@@ -66,8 +70,12 @@ public class PasswordGrantTest extends AbstractFunctionalTest {
 
         Map contentAsMap = objectMapper.readValue(contentAsString, Map.class);
 
-        assertNotNull(contentAsMap.get("access_token"));
+        String accessToken = (String) contentAsMap.get("access_token");
+        assertNotNull(accessToken);
         assertNotNull(contentAsMap.get("refresh_token"));
+
+        // assert that the access token is indeed a JWT.
+        assertNotNull(jwtDecoderEncoder.decode(accessToken));
     }
 
     @Test

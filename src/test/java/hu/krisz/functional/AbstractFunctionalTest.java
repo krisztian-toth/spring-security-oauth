@@ -4,6 +4,7 @@ import hu.krisz.dao.entity.client.OAuthClient;
 import hu.krisz.dao.entity.user.Permission;
 import hu.krisz.dao.entity.user.Role;
 import hu.krisz.dao.entity.user.User;
+import hu.krisz.token.JwtDecoderEncoder;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,8 @@ public abstract class AbstractFunctionalTest {
 
     private static final String RESOURCE_IDS = null;
     private static final String SCOPES = "profile";
-    private static final String GRANT_TYPES = "password,refresh_token";
-    private static final String AUTHORITIES = null;
+    private static final String GRANT_TYPES = "password,refresh_token,client_credentials";
+    private static final String CLIENT_AUTHORITIES = "clientAuthority";
     private static final String WEB_SERVER_REDIRECT_URIS = null;
     private static final Integer ACCESS_TOKEN_VALIDITY = 100;
     private static final Integer REFRESH_TOKEN_VALIDITY = 500;
@@ -57,6 +58,9 @@ public abstract class AbstractFunctionalTest {
 
     @Autowired
     protected PasswordEncoder passwordEncoder;
+
+    @Autowired
+    protected JwtDecoderEncoder jwtDecoderEncoder;
 
     ObjectMapper objectMapper = new ObjectMapper();
 
@@ -73,7 +77,7 @@ public abstract class AbstractFunctionalTest {
         }
 
         testEntityManager.persistAndFlush(new OAuthClient(A_CLIENT_ID, encryptedClientSecret, RESOURCE_IDS, SCOPES,
-                GRANT_TYPES, AUTHORITIES, WEB_SERVER_REDIRECT_URIS, ACCESS_TOKEN_VALIDITY,
+                GRANT_TYPES, CLIENT_AUTHORITIES, WEB_SERVER_REDIRECT_URIS, ACCESS_TOKEN_VALIDITY,
                 REFRESH_TOKEN_VALIDITY, ADDITIONAL_INFORMATION, AUTO_APPROVE));
     }
 
