@@ -79,10 +79,12 @@ public abstract class AbstractFunctionalTest {
 
     /**
      * Creates a {@link User} entity with a role and associated permission.
+     *
+     * @param enabled whether the user is enabled or not
      */
-    void createUser() {
+    void createUserWith(boolean enabled) {
         String encryptedPassword = passwordEncoder.encode(UNENCRYPTED_PASSWORD);
-        User user = new User(A_USERNAME, encryptedPassword, A_COMPANY_NAME, true);
+        User user = new User(A_USERNAME, encryptedPassword, A_COMPANY_NAME, enabled);
         Role role = new Role(Role.Name.USER);
         String permissionName = "permissionName";
         String permissionDescription = "permissionDescription";
