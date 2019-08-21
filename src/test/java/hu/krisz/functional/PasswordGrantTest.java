@@ -97,7 +97,7 @@ public class PasswordGrantTest extends AbstractFunctionalTest {
         Map contentAsMap = objectMapper.readValue(contentAsString, Map.class);
 
         assertEquals("invalid_grant", contentAsMap.get("error"));
-        assertEquals("User is disabled", contentAsMap.get("error_description"));
+        assertEquals("Bad credentials", contentAsMap.get("error_description"));
     }
 
     @Test
@@ -122,6 +122,7 @@ public class PasswordGrantTest extends AbstractFunctionalTest {
         Map contentAsMap = objectMapper.readValue(contentAsString, Map.class);
 
         assertEquals("invalid_grant", contentAsMap.get("error"));
+        assertEquals("User is disabled", contentAsMap.get("error_description"));
     }
 
     @Test

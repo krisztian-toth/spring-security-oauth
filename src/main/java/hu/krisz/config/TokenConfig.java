@@ -6,10 +6,13 @@ import hu.krisz.token.JwtDecoderEncoder;
 import hu.krisz.token.PersistedRefreshTokenJwtTokenStore;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
@@ -18,8 +21,10 @@ import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConv
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 
 import java.security.Key;
+import java.util.Collections;
 
 /**
  * Configuration class for setting up the token services.
@@ -30,6 +35,9 @@ import java.security.Key;
 public class TokenConfig {
     @Value("{jwt.signing.key}")
     private String jwtSigningKey;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Bean
     protected TokenEnhancer accessTokenEnhancerBean(JwtDecoderEncoder jwtDecoderEncoder) {
@@ -68,10 +76,18 @@ public class TokenConfig {
                                                                         TokenEnhancer accessTokenEnhancer) {
         DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
         defaultTokenServices.setTokenStore(tokenStore);
+        defaultTokenServices.setAuthenticationManager(createPreAuthProvider());
         defaultTokenServices.setClientDetailsService(clientDetailsServiceBean);
         defaultTokenServices.setTokenEnhancer(accessTokenEnhancer);
         defaultTokenServices.setSupportRefreshToken(true);
         defaultTokenServices.setReuseRefreshToken(false);
         return defaultTokenServices;
     }
+
+    private ProviderManager createPreAuthProvider() {
+        PreAuthenticatedAuthenticationProvider provider = new PreAuthenticatedAuthenticationProvider();
+        provider.setPreAuthenticatedUserDetailsService(new UserDetailsByNameServiceWrapper<>(userDetailsService));
+        return new ProviderManager(Collections.singletonList(provider));
+    }
+
 }

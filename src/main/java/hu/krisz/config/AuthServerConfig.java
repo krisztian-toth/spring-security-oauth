@@ -54,7 +54,6 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints
                 .tokenServices(tokenServices)
-                .accessTokenConverter(accessTokenConverter)
                 .userDetailsService(userDetailsService)
                 .authenticationManager(authenticationConfiguration.getAuthenticationManager());
     }
