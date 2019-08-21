@@ -1,16 +1,11 @@
 package hu.krisz.dao.entity.user;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * Table for permissions (e.g. view files, create folders).
@@ -21,22 +16,10 @@ import java.util.UUID;
 @Table(schema = "oauth_user")
 public class Permission {
     @Id
-    @GeneratedValue
-    private UUID id;
-
-    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
     private String description;
-
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE,
-            CascadeType.REFRESH,
-            CascadeType.DETACH
-    }, mappedBy = "permissions")
-    private List<Role> roles;
 
     /**
      * Constructor for {@link Permission}.
@@ -54,16 +37,8 @@ public class Permission {
      */
     private Permission() {}
 
-    public UUID getId() {
-        return id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public List<Role> getRoles() {
-        return roles;
     }
 
     public String getDescription() {
@@ -75,18 +50,17 @@ public class Permission {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Permission that = (Permission) o;
-        return (id != null && Objects.equals(id, that.id));
+        return Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(name);
     }
 
     @Override
     public String toString() {
         return "Permission{" +
-                "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 '}';

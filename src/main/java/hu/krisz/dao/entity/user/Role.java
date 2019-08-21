@@ -2,10 +2,7 @@ package hu.krisz.dao.entity.user;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -15,7 +12,6 @@ import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * Table for roles (e.g. admin, owner, editor).
@@ -28,11 +24,7 @@ import java.util.UUID;
 @Table(schema = "oauth_user")
 public class Role {
     @Id
-    @GeneratedValue
-    private UUID id;
-
-    @Enumerated(EnumType.STRING)
-    private Name name;
+    private String name;
 
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
@@ -43,8 +35,8 @@ public class Role {
     @JoinTable(
             name = "role_permission",
             schema = "oauth_user",
-            joinColumns = @JoinColumn(name = "role_id"),
-            inverseJoinColumns = @JoinColumn(name = "permission_id")
+            joinColumns = @JoinColumn(name = "role", referencedColumnName = "name"),
+            inverseJoinColumns = @JoinColumn(name = "permission", referencedColumnName = "name")
     )
     private List<Permission> permissions = new ArrayList<>();
 
@@ -53,7 +45,7 @@ public class Role {
      *
      * @param name name of the role
      */
-    public Role(Name name) {
+    public Role(String name) {
         this.name = name;
     }
 
@@ -71,11 +63,7 @@ public class Role {
         permissions.add(permission);
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public Name getName() {
+    public String getName() {
         return name;
     }
 
@@ -99,29 +87,8 @@ public class Role {
     @Override
     public String toString() {
         return "Role{" +
-                "id=" + id +
                 ", name='" + name + '\'' +
                 ", permissions=" + permissions +
                 '}';
-    }
-
-    /**
-     * Represents the possible roles in the application.
-     */
-    public enum Name {
-        /**
-         * Administrators of the application.
-         */
-        ADMIN,
-
-        /**
-         * Managers for a given company.
-         */
-        MANAGER,
-
-        /**
-         * User of the application.
-         */
-        USER;
     }
 }

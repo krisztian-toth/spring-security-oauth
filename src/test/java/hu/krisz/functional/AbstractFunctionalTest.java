@@ -101,7 +101,7 @@ public abstract class AbstractFunctionalTest {
     void createUserWith(boolean enabled) {
         String encryptedPassword = passwordEncoder.encode(UNENCRYPTED_PASSWORD);
         User user = new User(A_USERNAME, encryptedPassword, A_COMPANY_NAME, enabled);
-        Role role = new Role(Role.Name.USER);
+        Role role = new Role("user");
         String permissionName = "permissionName";
         String permissionDescription = "permissionDescription";
         Permission permission = new Permission(permissionName, permissionDescription);
