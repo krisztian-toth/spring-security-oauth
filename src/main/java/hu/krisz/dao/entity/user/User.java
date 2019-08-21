@@ -19,8 +19,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Entity which represents a simple user in the application. Note that it's not in the default schema. Username and
- * companyName form a unique constraint together.
+ * Entity which represents a simple user in the application. Note that it's not in the default schema.
  *
  * @author krisztian.toth on 7-8-2019
  */
