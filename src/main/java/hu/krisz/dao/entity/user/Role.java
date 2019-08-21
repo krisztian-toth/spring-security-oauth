@@ -41,7 +41,7 @@ public class Role {
             CascadeType.DETACH
     }, fetch = FetchType.EAGER)
     @JoinTable(
-            name = "role_permissions",
+            name = "role_permission",
             schema = "oauth_user",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id")

@@ -56,7 +56,7 @@ public class User {
             CascadeType.DETACH
     })
     @JoinTable(
-            name = "user_roles",
+            name = "user_role",
             schema = "oauth_user",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
