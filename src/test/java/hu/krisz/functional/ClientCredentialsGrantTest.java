@@ -44,9 +44,6 @@ public class ClientCredentialsGrantTest extends AbstractFunctionalTest {
 
         // there should not be a refresh token when using the client credentials grant type
         assertNull(contentAsMap.get("refresh_token"));
-
-        // assert that the access token is a JWT.
-        assertNotNull(jwtDecoderEncoder.decode(accessToken));
     }
 
     /**
@@ -78,9 +75,6 @@ public class ClientCredentialsGrantTest extends AbstractFunctionalTest {
 
         // there should not be a refresh token when using the client credentials grant type
         assertNull(contentAsMap.get("refresh_token"));
-
-        // assert that the access token is a JWT.
-        assertNotNull(jwtDecoderEncoder.decode(accessToken));
     }
 
     @Test

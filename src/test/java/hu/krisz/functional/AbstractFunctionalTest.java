@@ -4,7 +4,6 @@ import hu.krisz.dao.entity.client.OAuthClient;
 import hu.krisz.dao.entity.user.Permission;
 import hu.krisz.dao.entity.user.Role;
 import hu.krisz.dao.entity.user.User;
-import hu.krisz.token.JwtDecoderEncoder;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,9 +73,6 @@ public abstract class AbstractFunctionalTest {
 
     @Autowired
     protected PasswordEncoder passwordEncoder;
-
-    @Autowired
-    protected JwtDecoderEncoder jwtDecoderEncoder;
 
     ObjectMapper objectMapper = new ObjectMapper();
 

@@ -11,19 +11,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.common.DefaultExpiringOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.ExpiringOAuth2RefreshToken;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
-import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import java.time.Instant;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,69 +31,39 @@ import java.util.Map;
  *
  * @author krisztian.toth on 8-8-2019
  */
-public class PersistedRefreshTokenJwtTokenStore implements TokenStore {
+public class PersistedRefreshTokenJwtTokenStore extends JwtTokenStore {
 
     private static final Log LOG = LogFactory.getLog(PersistedRefreshTokenJwtTokenStore.class);
 
     private static final String CLIENT_ID = "client_id";
     private static final String GRANT_TYPE = "grant_type";
 
-    private final JwtDecoderEncoder jwtDecoderEncoder;
-    private final AccessTokenConverter accessTokenConverter;
     private final RefreshTokenRepository refreshTokenRepository;
     private final ClientDetailsService clientDetailsService;
     private final UserDetailsService userDetailsService;
 
     /**
      * Create a JwtTokenStore with this token enhancer (should be shared with the DefaultTokenServices if used).
-     * @param jwtDecoderEncoder a {@link JwtDecoderEncoder}
-     * @param accessTokenConverter an {@link AccessTokenConverter}
-     * @param refreshTokenRepository the {@link RefreshTokenRepository}
-     * @param clientDetailsService the {@link ClientDetailsService}
-     * @param userDetailsService the {@link UserDetailsService}
+     *
+     * @param jwtAccessTokenConverter a {@link JwtAccessTokenConverter}
+     * @param refreshTokenRepository  the {@link RefreshTokenRepository}
+     * @param clientDetailsService    the {@link ClientDetailsService}
+     * @param userDetailsService      the {@link UserDetailsService}
      */
-    public PersistedRefreshTokenJwtTokenStore(JwtDecoderEncoder jwtDecoderEncoder,
-                                              AccessTokenConverter accessTokenConverter,
+    public PersistedRefreshTokenJwtTokenStore(JwtAccessTokenConverter jwtAccessTokenConverter,
                                               RefreshTokenRepository refreshTokenRepository,
                                               ClientDetailsService clientDetailsService,
                                               UserDetailsService userDetailsService) {
-        this.jwtDecoderEncoder = jwtDecoderEncoder;
-        this.accessTokenConverter = accessTokenConverter;
+        super(jwtAccessTokenConverter);
         this.refreshTokenRepository = refreshTokenRepository;
         this.clientDetailsService = clientDetailsService;
         this.userDetailsService = userDetailsService;
     }
 
-    @Override
-    public OAuth2Authentication readAuthentication(OAuth2AccessToken token) {
-        return accessTokenConverter.extractAuthentication(jwtDecoderEncoder.decode(token.getValue()));
-    }
-
-    @Override
-    public OAuth2Authentication readAuthentication(String token) {
-        return accessTokenConverter.extractAuthentication(jwtDecoderEncoder.decode(token));
-    }
-
-    @Override
-    public void storeAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
-        // we don't store access tokens
-    }
-
-    @Override
-    public OAuth2AccessToken readAccessToken(String tokenValue) {
-        return accessTokenConverter.extractAccessToken(tokenValue, jwtDecoderEncoder.decode(tokenValue));
-
-    }
-
-    @Override
-    public void removeAccessToken(OAuth2AccessToken token) {
-        // we don't store access tokens in any persistent store
-    }
-
     /**
      * Stores the refresh token in the database.
      *
-     * @param refreshToken The refresh token to store.
+     * @param refreshToken   The refresh token to store.
      * @param authentication The authentication associated with the refresh token.
      */
     @Override
@@ -139,7 +107,7 @@ public class PersistedRefreshTokenJwtTokenStore implements TokenStore {
                 .map(token -> new DefaultExpiringOAuth2RefreshToken(token.getToken(), Date.from(token.getExpiresAt())))
                 .orElse(null);
 
-        // TODO add approvals with approvalStore
+        // TODO approvalStore
     }
 
     @Override
@@ -147,28 +115,7 @@ public class PersistedRefreshTokenJwtTokenStore implements TokenStore {
         refreshTokenRepository.findByToken(token.getValue())
                 .ifPresent(refreshTokenRepository::delete);
 
-        // TODO revoke approvals with approvalStore
-    }
-
-    @Override
-    public void removeAccessTokenUsingRefreshToken(OAuth2RefreshToken refreshToken) {
-        // we don't store access tokens in any persistent store
-    }
-
-    @Override
-    public OAuth2AccessToken getAccessToken(OAuth2Authentication authentication) {
-        // We don't want to accidentally issue a token, and we have no way to reconstruct the refresh token
-        return null;
-    }
-
-    @Override
-    public Collection<OAuth2AccessToken> findTokensByClientIdAndUserName(String clientId, String userName) {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<OAuth2AccessToken> findTokensByClientId(String clientId) {
-        return Collections.emptyList();
+        // TODO approvalStore
     }
 
     @Override
