@@ -39,8 +39,7 @@ public class ClientCredentialsGrantTest extends AbstractFunctionalTest {
 
         Map contentAsMap = objectMapper.readValue(contentAsString, Map.class);
 
-        String accessToken = (String) contentAsMap.get("access_token");
-        assertNotNull(accessToken);
+        assertNotNull(contentAsMap.get("access_token"));
 
         // there should not be a refresh token when using the client credentials grant type
         assertNull(contentAsMap.get("refresh_token"));
@@ -70,8 +69,7 @@ public class ClientCredentialsGrantTest extends AbstractFunctionalTest {
 
         Map contentAsMap = objectMapper.readValue(contentAsString, Map.class);
 
-        String accessToken = (String) contentAsMap.get("access_token");
-        assertNotNull(accessToken);
+        assertNotNull(contentAsMap.get("access_token"));
 
         // there should not be a refresh token when using the client credentials grant type
         assertNull(contentAsMap.get("refresh_token"));

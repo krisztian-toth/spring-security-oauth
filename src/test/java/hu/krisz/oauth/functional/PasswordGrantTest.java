@@ -39,8 +39,7 @@ public class PasswordGrantTest extends AbstractFunctionalTest {
 
         Map contentAsMap = objectMapper.readValue(contentAsString, Map.class);
 
-        String accessToken = (String) contentAsMap.get("access_token");
-        assertNotNull(accessToken);
+        assertNotNull(contentAsMap.get("access_token"));
         assertNotNull(contentAsMap.get("refresh_token"));
     }
 
@@ -65,8 +64,7 @@ public class PasswordGrantTest extends AbstractFunctionalTest {
 
         Map contentAsMap = objectMapper.readValue(contentAsString, Map.class);
 
-        String accessToken = (String) contentAsMap.get("access_token");
-        assertNotNull(accessToken);
+        assertNotNull(contentAsMap.get("access_token"));
         assertNotNull(contentAsMap.get("refresh_token"));
     }
 
