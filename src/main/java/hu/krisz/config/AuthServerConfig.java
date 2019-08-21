@@ -11,9 +11,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
-import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenStore;
 
 /**
  * Configuration class for the authorization server.
@@ -28,22 +26,16 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private AccessTokenConverter accessTokenConverter;
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private ClientDetailsService clientDetailsServiceBean;
 
     @Autowired
     private AuthorizationServerTokenServices tokenServices;
 
     @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
     private AuthenticationConfiguration authenticationConfiguration;
-
-    @Autowired
-    private TokenStore tokenStore;
-
-    @Autowired
-    private ClientDetailsService clientDetailsServiceBean;
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) {
