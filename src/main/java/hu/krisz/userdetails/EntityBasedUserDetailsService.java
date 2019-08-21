@@ -44,7 +44,7 @@ public class EntityBasedUserDetailsService implements UserDetailsService {
                 .map(this::createUserDetailsFrom)
                 .orElseThrow(() -> {
                     LOGGER.debug("user with username '" + username + "' was not found");
-                    return new UsernameNotFoundException("user with username '" + username + "' was not found");
+                    return new UsernameNotFoundException("Bad credentials");
                 });
     }
 
@@ -52,7 +52,7 @@ public class EntityBasedUserDetailsService implements UserDetailsService {
         List<GrantedAuthority> permissions = getGrantedAuthoritiesFrom(user.getRoles());
         if (permissions.isEmpty()) {
             LOGGER.debug("User '" + user.getUsername() + "' has no authorities and will be treated as 'not found'");
-            throw new UsernameNotFoundException("user '" + user.getUsername() + "' has no GrantedAuthority.");
+            throw new UsernameNotFoundException("Bad credentials");
         }
 
         return new ApplicationUser(user.getId(), user.getCreatedAt(), user.getUpdatedAt(), user.getUsername(),
