@@ -88,6 +88,13 @@ public class JwtDecoderEncoder {
         return claims;
     }
 
+    /**
+     * Encodes and signs the JWT.
+     *
+     * @param accessToken an {@link OAuth2AccessToken} to encode
+     * @param authentication an {@link OAuth2Authentication} with authentication information
+     * @return the encoded and signed JWT as {@link String}
+     */
     public String encode(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
         JwtBuilder jwtBuilder = Jwts.builder()
                 .setId(accessToken.getValue())
