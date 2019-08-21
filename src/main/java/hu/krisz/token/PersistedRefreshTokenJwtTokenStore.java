@@ -74,10 +74,10 @@ public class PersistedRefreshTokenJwtTokenStore extends JwtTokenStore {
             if (userAuthentication != null) {
                 Object principal = userAuthentication.getPrincipal();
                 String username;
-                if (principal instanceof String) {
-                    username = (String) principal;
-                } else if (principal instanceof UserDetails) {
+                if (principal instanceof UserDetails) {
                     username = ((UserDetails) principal).getUsername();
+                } else if (principal instanceof String) {
+                    username = (String) principal;
                 } else {
                     LOG.warn("Unknown type for principal: " + principal.getClass().toString()
                             + ", skipping persisting...");
