@@ -43,6 +43,10 @@
 			<artifactId>postgresql</artifactId>
 			<version>42.2.6</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
 
 		<!--TEST-->
 		<dependency>
@@ -53,6 +57,12 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>it.ozimov</groupId>
+			<artifactId>embedded-redis</artifactId>
+			<version>0.7.2</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
