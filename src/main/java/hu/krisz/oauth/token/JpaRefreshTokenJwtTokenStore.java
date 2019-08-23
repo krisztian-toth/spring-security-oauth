@@ -27,13 +27,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * JWT Token store which persists the refresh token.
+ * JWT Token store which persists the refresh token only using spring data JPA.
  *
  * @author krisztian.toth on 8-8-2019
  */
-public class PersistedRefreshTokenJwtTokenStore extends JwtTokenStore {
+public class JpaRefreshTokenJwtTokenStore extends JwtTokenStore {
 
-    private static final Log LOG = LogFactory.getLog(PersistedRefreshTokenJwtTokenStore.class);
+    private static final Log LOG = LogFactory.getLog(JpaRefreshTokenJwtTokenStore.class);
 
     private static final String CLIENT_ID = "client_id";
     private static final String GRANT_TYPE = "grant_type";
@@ -50,10 +50,10 @@ public class PersistedRefreshTokenJwtTokenStore extends JwtTokenStore {
      * @param clientDetailsService    the {@link ClientDetailsService}
      * @param userDetailsService      the {@link UserDetailsService}
      */
-    public PersistedRefreshTokenJwtTokenStore(JwtAccessTokenConverter jwtAccessTokenConverter,
-                                              RefreshTokenRepository refreshTokenRepository,
-                                              ClientDetailsService clientDetailsService,
-                                              UserDetailsService userDetailsService) {
+    public JpaRefreshTokenJwtTokenStore(JwtAccessTokenConverter jwtAccessTokenConverter,
+                                        RefreshTokenRepository refreshTokenRepository,
+                                        ClientDetailsService clientDetailsService,
+                                        UserDetailsService userDetailsService) {
         super(jwtAccessTokenConverter);
         this.refreshTokenRepository = refreshTokenRepository;
         this.clientDetailsService = clientDetailsService;
