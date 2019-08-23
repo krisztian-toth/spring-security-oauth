@@ -3,11 +3,14 @@ package hu.krisz.oauth.config;
 import hu.krisz.oauth.dao.repository.RefreshTokenRepository;
 import hu.krisz.oauth.token.JwtAccessTokenEnhancer;
 import hu.krisz.oauth.token.JpaRefreshTokenJwtTokenStore;
+import hu.krisz.oauth.token.RefreshTokenJwtStoreDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +20,7 @@ import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 
 import java.util.Collections;
@@ -46,11 +50,25 @@ public class TokenConfig {
     }
 
     @Bean
+    @Profile("!redis")
     protected TokenStore tokenStoreBean(JwtAccessTokenConverter jwtAccessTokenConverter,
                                         RefreshTokenRepository refreshTokenRepository,
                                         ClientDetailsService clientDetailsService) {
         return new JpaRefreshTokenJwtTokenStore(jwtAccessTokenConverter, refreshTokenRepository,
                 clientDetailsService, userDetailsService);
+    }
+
+    @Bean
+    @Profile("redis")
+    protected TokenStore redisTokenStoreBean(RedisConnectionFactory connectionFactory) {
+        return new RedisTokenStore(connectionFactory);
+    }
+
+    @Bean
+    @Profile("redis")
+    protected TokenStore tokenStoreBean(JwtAccessTokenConverter jwtAccessTokenConverter,
+                                        TokenStore redisTokenStoreBean) {
+        return new RefreshTokenJwtStoreDelegate(jwtAccessTokenConverter, redisTokenStoreBean);
     }
 
     @Bean
